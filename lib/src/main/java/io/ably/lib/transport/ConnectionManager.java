@@ -10,12 +10,10 @@ import io.ably.lib.realtime.ConnectionState;
 import io.ably.lib.realtime.ConnectionStateListener;
 import io.ably.lib.transport.ITransport.ConnectListener;
 import io.ably.lib.transport.ITransport.TransportParams;
-import io.ably.lib.types.AblyException;
-import io.ably.lib.types.ClientOptions;
-import io.ably.lib.types.ErrorInfo;
-import io.ably.lib.types.ProtocolMessage;
+import io.ably.lib.types.*;
 import io.ably.lib.types.ProtocolMessage.Action;
 import io.ably.lib.util.Log;
+import io.ably.lib.util.Validator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -254,7 +252,16 @@ public class ConnectionManager implements Runnable, ConnectListener {
 	 * transport events/notifications
 	 ***************************************/
 
-	void onMessage(ProtocolMessage message) {
+	void onMessage(ProtocolMessage message) throws AblyException {
+		Validator.of(message)
+				.validate(new Predicate<ProtocolMessage>() {
+					@Override
+					public boolean test(ProtocolMessage protocolMessage) {
+						return protocolMessage.msgSerial != null;
+					}
+				}, "Message contains invalid `msgSerial` value")
+				.get();
+
 		if(protocolListener != null)
 			protocolListener.onRawMessage(message);
 		switch(message.action) {

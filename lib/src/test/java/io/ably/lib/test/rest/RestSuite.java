@@ -1,5 +1,6 @@
 package io.ably.lib.test.rest;
 
+import io.ably.lib.test.util.ValidatorTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.JUnitCore;
@@ -22,7 +23,8 @@ import io.ably.lib.test.common.Setup;
 	RestChannelHistoryTest.class,
 	RestChannelPublishTest.class,
 	RestCryptoTest.class,
-	RestPresenceTest.class
+	RestPresenceTest.class,
+	ValidatorTest.class
 })
 public class RestSuite {
 

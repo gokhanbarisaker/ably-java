@@ -553,10 +553,16 @@ public class ConnectionManager implements Runnable, ConnectListener {
 			if(stateChange != null)
 				handleStateChange(stateChange);
 		}
+
+		Log.v(TAG, "Connection manager detected terminal state");
+
 		synchronized(this) {
 			if(mgrThread == thisThread)
+				Log.v(TAG, "Connection manager will clean up artifacts");
 				mgrThread = null;
 		}
+
+		Log.v(TAG, "Connection manager thread will terminate");
 	}
 
 	@Override

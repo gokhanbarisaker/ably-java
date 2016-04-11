@@ -28,6 +28,7 @@ public class ConnectionManager implements Runnable, ConnectListener {
 	private static final String TAG = ConnectionManager.class.getName();
 	private static final String INTERNET_CHECK_URL = "http://internet-up.ably-realtime.com/is-the-internet-up.txt";
 	private static final String INTERNET_CHECK_OK = "yes";
+	private static final ThreadGroup threadGroup = new ThreadGroup("Ably");
 
 	/***********************************
 	 * default errors
@@ -245,7 +246,7 @@ public class ConnectionManager implements Runnable, ConnectListener {
 			};
 			synchronized(heartbeatWaiters) {
 				heartbeatWaiters.add(waiter);
-				(new Thread(waiter)).start();
+				(new Thread(threadGroup, waiter, "Ping")).start();
 			}
 		}
 		try {
@@ -374,7 +375,7 @@ public class ConnectionManager implements Runnable, ConnectListener {
 		boolean creating = false;
 		synchronized(this) {
 			if(mgrThread == null) {
-				mgrThread = new Thread(this);
+				mgrThread = new Thread(threadGroup, this, "Connection manager");
 				state = states.get(ConnectionState.initialized);
 				creating = true;
 			}
